@@ -9,7 +9,7 @@ module.exports = {
         'royal-purple': '#A445ED',
       },
       backgroundImage: {
-        'play-button': "url('/public/assets/icon-play.svg')",
+        'play-button': "url('/assets/icon-play.svg')",
       },
     },
   },

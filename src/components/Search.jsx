@@ -21,7 +21,7 @@ const Search = () => {
             value={word}
           />
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-            <img src="../../public/assets/icon-search.svg" alt="" />
+            <img src="../../assets/icon-search.svg" alt="" />
           </div>
         </div>
       </form>
