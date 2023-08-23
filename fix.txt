@@ -1,0 +1,55 @@
+I’ve been reviewing the codebase for your dictionary app. There are a few issues and elements of the architecture that I’d like to bring to your attention, as I believe they could be improved.
+I can see that you have put all of your code in single context which means that if word, wordData, font anything changes, it will re-render all the components consuming the value of context. For example, all the values mentioned below
+        wordData,
+        handleSubmit,
+        word,
+        handleChange,
+        font,
+        setFont,
+        toggleDark,
+will get re-created and all the components consuming these values will get re-rendered if any one of them change(even if you type something in search, they will get created each time again on each key stroke).
+2. If you want to have a context, I would recommend you to keep multiple context, one for the font called FontContext and another for the theme called ThemeContext.
+3. Context is most commonly used for global state. The term “global state” is used for state that is needed across many different parts of the application, like the color theme, or the currently-logged-in user. This is in contrast to local state, which is only used in a single place within the application. Here’s my rule of thumb: If I find I keep having to pass a prop through a component, I should probably use context for it. The WordDisplay component is isolated and can manage it’s state own it’s own, so I think context for it is overkill here. You can simple maintain the state of word inside WordDisplay component. (edited)
+12:27
+4. All this logic should move to the WordDisplay component, context is overkill for it and will slow down the application because of to too many re-renders. the handleChange function get’s called on each keystroke, which means your components consuming, font, theme etc are getting re-rendered on each key stroke.
+// Setting up first render to use Keyboard Word
+  const onLoad = async () => {
+    try {
+      const response = await fetch(
+        `https://api.dictionaryapi.dev/api/v2/entries/en/keyboard`
+      );
+      const data = await response.json();
+      setWordData(data);
+    } catch (error) {
+      console.log("error", error);
+    }
+    setWord("keyboard");
+  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch(
+        `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+      );
+      const data = await response.json();
+      setWordData(data);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+  const handleChange = (event) => {
+    event.preventDefault();
+    setWord(event.target.value);
+  };
+  useEffect(() => {
+    onLoad();
+  }, []); (edited)
+12:28
+5. I would recommend you to use the same onLoad function in useEffect and handleSubmit. You just need to make the onLoad function accept a argument called word, if word exist you an pass it as queryParams otherwise you can omit the queryParams. It will save you many lines of code.
+12:29
+6. Now, that onLoad function is getting used in both useEffect(initial fetching) and handleSubmit(fetching on event), it can be re-named to fetchWord.
+12:31
+7. You cold move the following function to the utils folder.
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ');
+}

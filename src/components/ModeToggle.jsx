@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import { Switch } from '@headlessui/react';
-import { useGlobalContext } from '../context';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import { useTheme } from '../context/ThemeContext';
+import { classNames } from '../utils/classNames';
 
 const ModeToggle = () => {
-  const { toggleDark } = useGlobalContext();
+  const { toggleDark } = useTheme();
   const [enabled, setEnabled] = useState(false);
 
   return (

@@ -1,17 +1,16 @@
 import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 import WordDisplay from './components/WordDisplay';
-import { useGlobalContext } from './context';
+import { useFont } from './context/FontContext';
 import tw, { styled, css } from 'twin.macro';
 
 function App() {
-  const { font } = useGlobalContext();
+  const { font } = useFont();
+
   return (
     <Main font={font}>
       <Wrapper>
         <Navbar />
         <WordDisplay />
-        <Footer />
       </Wrapper>
     </Main>
   );

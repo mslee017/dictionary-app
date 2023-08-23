@@ -1,7 +1,7 @@
-import { useGlobalContext } from '../context';
+import { useFont } from '../context/FontContext';
 
 const FontSelect = () => {
-  const { font, setFont } = useGlobalContext();
+  const { font, setFont } = useFont();
 
   return (
     <div className="flex items-center">

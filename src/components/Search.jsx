@@ -1,9 +1,6 @@
 import React from 'react';
-import { useGlobalContext } from '../context';
 
-const Search = () => {
-  const { word, handleSubmit, handleChange } = useGlobalContext();
-
+const Search = ({ word, handleSubmit, handleChange }) => {
   return (
     <div>
       <form action="#" onSubmit={handleSubmit}>

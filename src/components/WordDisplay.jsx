@@ -1,9 +1,43 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Search from './Search';
-import { useGlobalContext } from '../context';
 
 const WordDisplay = () => {
-  const { wordData } = useGlobalContext();
+  const [word, setWord] = useState('');
+  const [wordData, setWordData] = useState([]);
+
+  const fetchWord = async word => {
+    try {
+      if (word) {
+        const response = await fetch(
+          `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+        );
+        const data = await response.json();
+        setWordData(data);
+      } else {
+        const response = await fetch(
+          `https://api.dictionaryapi.dev/api/v2/entries/en/keyboard`
+        );
+        const data = await response.json();
+        setWordData(data);
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const handleSubmit = async event => {
+    event.preventDefault();
+    fetchWord(word);
+  };
+
+  const handleChange = event => {
+    event.preventDefault();
+    setWord(event.target.value);
+  };
+
+  useEffect(() => {
+    fetchWord();
+  }, []);
 
   const findAudio = wordData[0]?.phonetics.find(phonetic => {
     const { audio } = phonetic;
@@ -13,8 +47,12 @@ const WordDisplay = () => {
   const audio = new Audio(findAudio);
 
   return (
-    <div>
-      <Search />
+    <div className="w-full">
+      <Search
+        word={word}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+      />
       <section className="flex items-center justify-between mb-8">
         <div>
           <h2 className="font-bold text-3xl">{wordData[0]?.word}</h2>
@@ -44,7 +82,7 @@ const WordDisplay = () => {
                   {definitions?.map((wordDefinition, index) => {
                     const { definition, example } = wordDefinition;
                     return (
-                      <div className="mb-4">
+                      <div className="mb-4" key={index}>
                         <li key={index} className="text-lg">
                           {definition}
                         </li>
@@ -77,6 +115,16 @@ const WordDisplay = () => {
             </section>
           );
         })}
+      </div>
+      <div className="flex items-center">
+        <p className="mr-4 text-sm text-faded-gray">Source</p>
+        <p>
+          <a
+            href={`https://en.wiktionary.org/wiki/${wordData[0]?.word}`}
+            target="_blank"
+            className="underline"
+          >{`https://en.wiktionary.org/wiki/${wordData[0]?.word}`}</a>
+        </p>
       </div>
     </div>
   );
